@@ -8,6 +8,12 @@ using System.Text;
 using authenticationServiceAPI.Models;
 using System.Reflection.Metadata.Ecma335;
 
+
+//Startup --> . ./startup.sh
+//Token -->  https://jwt.io/
+//Get --> Authorization --> Bearer token
+
+
 namespace authenticationServiceAPI.Controllers;
 
 [ApiController]

@@ -2,8 +2,19 @@
 
   <PropertyGroup>
 	<Company>The-Featured-Bugz</Company>
-	<FileVersion>0.1.0</FileVersion>
-	<Description>Auth</Description>
+	<FileVersion>0.1.1</FileVersion>
+	<Description>
+		0.1.0 Oprettet
+		
+		0.1.1 
+		Login model lavet.
+		Testcontroller oprettet og testet.
+		Authoriation virker.
+		
+	
+	
+	
+	</Description>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
