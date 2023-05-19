@@ -5,9 +5,12 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Security.Permissions;
+using Newtonsoft.Json;
 using authenticationServiceAPI.Models;
 using System.Reflection.Metadata.Ecma335;
-
+using System.Net.Http;
+using System.Threading.Tasks;
 
 //Startup --> . ./startup.sh
 //Token -->  https://jwt.io/
@@ -17,14 +20,17 @@ using System.Reflection.Metadata.Ecma335;
 namespace authenticationServiceAPI.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api")]
 public class AuthController : ControllerBase
 {
+    private readonly HttpClient _httpClient = new HttpClient();
     private readonly IConfiguration _config;
     private readonly ILogger<AuthController> _logger;
 
     public AuthController(ILogger<AuthController> logger, IConfiguration config)
     {
+
+        
         _config = config;
         _logger = logger;
     }
@@ -58,15 +64,38 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginModel login)
     {
-        _logger.LogInformation("Lad mig logge ind");
-        if (login.UserName != "username" || login.UserPassword != "password")
+        try
         {
-            return Unauthorized();
-        }
-        _logger.LogInformation("Nu har jeg modtaget en token");
-        var token = GenerateJwtToken(login.UserName);
-        return Ok(new { token });
+            string url = _config["apiGetUser"] ?? string.Empty;
+
+            HttpResponseMessage response = await _httpClient.GetAsync(url + $"?userName={login.UserName}&userPassword={login.UserPassword}");
+            _logger.LogInformation("Lad mig logge ind: " + url + " og her er mit response: " + response);
+
+            response.EnsureSuccessStatusCode(); // Kaster en exception, hvis responsen ikke er en succes (HTTP status 2xx)
+
+            string responseContent = await response.Content.ReadAsStringAsync();
+            
+            _logger.LogInformation("ResponsseContennt: " + responseContent);
+            UserWithToken userWithToken = JsonConvert.DeserializeObject<UserWithToken>(responseContent);
         
+            if (login.UserName != userWithToken.UserName || login.UserPassword != userWithToken.UserPassword)
+            {
+                return Unauthorized();
+            }
+            _logger.LogInformation("Nu har jeg modtaget en token");
+            var token = GenerateJwtToken(login.UserName);
+
+            userWithToken.Token = token;
+        
+            return Ok(userWithToken);    
+            
+        }
+        catch (System.Exception ex)
+        {
+            
+            _logger.LogInformation(ex.Message);
+            return BadRequest(ex.Message);
+        }
     }
 
 
@@ -102,4 +131,5 @@ public class AuthController : ControllerBase
             return StatusCode(404);
         }
     }
+    
 }
