@@ -12,6 +12,7 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
+    string myValidAudience = Environment.GetEnvironmentVariable("ValidAudience") ?? "http://localhost";
     //Generer signatur n�gler
     string mySecret = Environment.GetEnvironmentVariable("Secret") ?? "none";
     string myIssuer = Environment.GetEnvironmentVariable("Issuer") ?? "none";
@@ -26,7 +27,7 @@ try
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = myIssuer,
-            ValidAudience = "http://localhost",
+            ValidAudience = myValidAudience,
             IssuerSigningKey =
         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(mySecret))
         };

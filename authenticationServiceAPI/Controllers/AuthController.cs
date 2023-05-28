@@ -54,7 +54,7 @@ public class AuthController : ControllerBase
         };
         var token = new JwtSecurityToken(
         _config["Issuer"],
-        "http://localhost",
+        _config["ValidAudience" ?? "http://localhost"],
         claims,
         expires: DateTime.Now.AddMinutes(15),
         signingCredentials: credentials);
