@@ -7,7 +7,6 @@ using System.Security.Claims;
 using System.Text;
 using System.Security.Permissions;
 using Newtonsoft.Json;
-using authenticationServiceAPI.Models;
 using System.Reflection.Metadata.Ecma335;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -29,10 +28,15 @@ public class AuthController : ControllerBase
 
     public AuthController(ILogger<AuthController> logger, IConfiguration config)
     {
-
-        
         _config = config;
         _logger = logger;
+
+        var hostName = System.Net.Dns.GetHostName();
+        var ips = System.Net.Dns.GetHostAddresses(hostName);
+        var _ipaddr = ips.First().MapToIPv4().ToString();
+        _logger.LogInformation(1, $"Taxabooking responding from {_ipaddr}");
+
+
     }
 
 
@@ -41,8 +45,8 @@ public class AuthController : ControllerBase
     //Metode til at oprette JWT tokens med brugerdefineret felt.
     private string GenerateJwtToken(string username)
     {
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Secret"]));
-        
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Secret"] ?? string.Empty));
+
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
         var claims = new[]
         {
@@ -54,10 +58,21 @@ public class AuthController : ControllerBase
         claims,
         expires: DateTime.Now.AddMinutes(15),
         signingCredentials: credentials);
+
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-
+    [HttpGet("version")]
+    public IEnumerable<string> Get()
+    {
+        var properties = new List<string>();
+        var assembly = typeof(Program).Assembly;
+        foreach (var attribute in assembly.GetCustomAttributesData())
+        {
+            properties.Add($"{attribute.AttributeType.Name} - {attribute.ToString()}");
+        }
+        return properties;
+    }
 
     //Post - Login
     [AllowAnonymous]  //Alle kan oprette
@@ -69,15 +84,14 @@ public class AuthController : ControllerBase
             string url = _config["apiGetUser"] ?? string.Empty;
 
             HttpResponseMessage response = await _httpClient.GetAsync(url + $"?userName={login.UserName}&userPassword={login.UserPassword}");
-            _logger.LogInformation("Lad mig logge ind: " + url + " og her er mit response: " + response);
 
             response.EnsureSuccessStatusCode(); // Kaster en exception, hvis responsen ikke er en succes (HTTP status 2xx)
 
             string responseContent = await response.Content.ReadAsStringAsync();
-            
+
             _logger.LogInformation("ResponsseContennt: " + responseContent);
             UserWithToken userWithToken = JsonConvert.DeserializeObject<UserWithToken>(responseContent);
-        
+
             if (login.UserName != userWithToken.UserName || login.UserPassword != userWithToken.UserPassword)
             {
                 return Unauthorized();
@@ -86,13 +100,13 @@ public class AuthController : ControllerBase
             var token = GenerateJwtToken(login.UserName);
 
             userWithToken.Token = token;
-        
-            return Ok(userWithToken);    
-            
+
+            return Ok(userWithToken);
+
         }
         catch (System.Exception ex)
         {
-            
+
             _logger.LogInformation(ex.Message);
             return BadRequest(ex.Message);
         }
@@ -131,5 +145,5 @@ public class AuthController : ControllerBase
             return StatusCode(404);
         }
     }
-    
+
 }
