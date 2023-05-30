@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 	<Company>The-Featured-Bugz</Company>
-	<FileVersion>0.1.1</FileVersion>
+	<FileVersion>1.0.0</FileVersion>
 	<Description>
 		0.1.0 Oprettet
 		
@@ -13,7 +13,7 @@
 		
     0.2.0 Loki og NLog tilføjet.
 	
-	
+	1.0.0 Første version til dockerhub
 	
 	</Description>
     <TargetFramework>net7.0</TargetFramework>
