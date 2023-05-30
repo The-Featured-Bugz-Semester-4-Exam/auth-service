@@ -82,8 +82,8 @@ public class AuthController : ControllerBase
         try
         {
             string url = _config["apiGetUser"] ?? string.Empty;
-            _logger.LogInformation("Getting prepared to check login with: " + url + $"?userName={login.UserName}&userPassword={login.UserPassword}");
-            HttpResponseMessage response = await _httpClient.GetAsync(url + $"?userName={login.UserName}&userPassword={login.UserPassword}");
+            _logger.LogInformation("Getting prepared to check login with: " + "http://" + url + $"?userName={login.UserName}&userPassword={login.UserPassword}");
+            HttpResponseMessage response = await _httpClient.GetAsync("http://" + url + $"?userName={login.UserName}&userPassword={login.UserPassword}");
             
             response.EnsureSuccessStatusCode(); // Kaster en exception, hvis responsen ikke er en succes (HTTP status 2xx)
 

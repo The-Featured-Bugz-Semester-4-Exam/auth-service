@@ -14,8 +14,8 @@ try
 
     string myValidAudience = Environment.GetEnvironmentVariable("ValidAudience") ?? "http://localhost";
     //Generer signatur n�gler
-    string mySecret = Environment.GetEnvironmentVariable("Secret") ?? "none";
-    string myIssuer = Environment.GetEnvironmentVariable("Issuer") ?? "none";
+    string mySecret = "mySecretIsASecret";
+    string myIssuer = "myIssuerIsAnIssue";
     builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
