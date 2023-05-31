@@ -85,7 +85,7 @@ public class AuthController : ControllerBase
             _logger.LogInformation("Getting prepared to check login with: " + "http://" + url + $"?userName={login.UserName}&userPassword={login.UserPassword}");
             HttpResponseMessage response = await _httpClient.GetAsync("http://" + url + $"?userName={login.UserName}&userPassword={login.UserPassword}");
             
-            response.EnsureSuccessStatusCode(); // Kaster en exception, hvis responsen ikke er en succes (HTTP status 2xx)
+            response.EnsureSuccessStatusCode(); 
 
             string responseContent = await response.Content.ReadAsStringAsync();
 
@@ -96,7 +96,7 @@ public class AuthController : ControllerBase
             {
                 return Unauthorized();
             }
-            _logger.LogInformation("Nu har jeg modtaget en token");
+            _logger.LogInformation("Now I have a token");
             var token = GenerateJwtToken(login.UserName);
 
             userWithToken.Token = token;
@@ -114,7 +114,7 @@ public class AuthController : ControllerBase
 
 
 
-    //Valider et login
+    
     [AllowAnonymous]
     [HttpPost("validate")]
     public async Task<IActionResult> ValidateJwtToken([FromBody] string? token)
