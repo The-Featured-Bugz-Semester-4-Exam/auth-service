@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 namespace authenticationServiceAPI.Controllers;
 
 [ApiController]
-[Route("api")]
+[Route("[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly HttpClient _httpClient = new HttpClient();
