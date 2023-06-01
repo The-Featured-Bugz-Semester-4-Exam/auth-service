@@ -121,8 +121,8 @@ public class AuthController : ControllerBase
             // Log the exception message
             _logger.LogInformation(ex.Message);
 
-            // Return a BadRequest response with the exception message
-            return BadRequest(ex.Message);
+            // Return a NotFound response with the exception message
+            return NotFound("Can't find the user");
         }
     }
 

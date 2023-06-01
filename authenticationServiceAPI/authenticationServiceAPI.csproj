@@ -2,18 +2,19 @@
 
   <PropertyGroup>
 	<Company>The-Featured-Bugz</Company>
-	<FileVersion>1.0.0</FileVersion>
+	<FileVersion>1.0.1</FileVersion>
 	<Description>
-		0.1.0 Oprettet		
-		0.1.1 
-		Login model lavet.
-		Testcontroller oprettet og testet.
-		Authoriation virker.
-		
-    0.2.0 Loki og NLog tilføjet.
-	
-	1.0.0 Første version til dockerhub
-	
+		0.1.0 Created
+    0.1.1 Login model made.
+
+    0.1.2 Test controller created and tested. Authorization works.
+
+    0.2.0 Loki and NLog added.
+
+    1.0.0 First version for dockerhub
+    1.0.1 The login method is made from badrequest to NotFoundRequest
+
+
 	</Description>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
